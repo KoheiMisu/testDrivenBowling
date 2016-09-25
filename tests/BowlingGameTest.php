@@ -9,6 +9,7 @@ class BowlingGameTest extends TestCase
 
     public function setUp()
     {
+        $this->BowlingGame = new BowlingGame();
     }
 
     public function tearDown()
@@ -16,8 +17,17 @@ class BowlingGameTest extends TestCase
         unset($this->BowlingGame);
     }
 
-    public function testCreateInstance()
+    /**
+     * 全投球がガーター
+     */
+    public function testAllGarter()
     {
         $this->BowlingGame = new BowlingGame();
+
+        for ($i = 0; $i < 20; $i++) {
+            $this->BowlingGame->recordShot(0);
+        }
+
+        $this->assertTrue(0 === $this->BowlingGame->calculateScore());
     }
 }
