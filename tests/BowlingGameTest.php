@@ -68,7 +68,9 @@ class BowlingGameTest extends TestCase
      * 1投目: 2
      * 2投目: 5
      * 3投目: 5 //スペア ??
-     * 3投目: 8
+     * 4投目: 8
+     *
+     * 残りはガター
      *
      * @return [type] [description]
      */
@@ -82,6 +84,30 @@ class BowlingGameTest extends TestCase
         $this->loopRecordShot(16, 0);
 
         $this->assertEquals(20, $this->BowlingGame->calculateScore());
+    }
+
+    /**
+     * 初球ストライクのケース
+     *
+     * 1投目: ストライク
+     * 2投目: 3
+     * 3投目: 3
+     * 4投目: 1
+     *
+     * 残りガター
+     *
+     * @return [type] [description]
+     */
+    public function testStrikeAtFirstFlame()
+    {
+        $this->BowlingGame->recordShot(10);
+        $this->BowlingGame->recordShot(3);
+        $this->BowlingGame->recordShot(3);
+        $this->BowlingGame->recordShot(1);
+
+        $this->loopRecordShot(15, 0);
+
+        $this->assertEquals(23, $this->BowlingGame->calculateScore());
     }
 
 
