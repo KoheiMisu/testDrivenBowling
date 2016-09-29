@@ -2,6 +2,7 @@
 
 require_once('./vendor/autoload.php');
 
-use App\BowlingGame;
+use App\Bird;
 
-$BowlingGame = new BowlingGame();
+$Bird = new Bird();
+echo $Bird->fly().PHP_EOL;
