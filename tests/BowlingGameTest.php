@@ -4,7 +4,7 @@ use App\BowlingGame;
 
 class BowlingGameTest extends TestCase
 {
-
+    /** @var BowlingGame  */
     public $BowlingGame;
 
     public function setUp()
@@ -47,7 +47,6 @@ class BowlingGameTest extends TestCase
      * 4投目以降、ガター
      *
      *
-     * @return [type] [description]
      */
     public function testSpareCase()
     {
@@ -72,7 +71,6 @@ class BowlingGameTest extends TestCase
      *
      * 残りはガター
      *
-     * @return [type] [description]
      */
     public function testSpareCaseAtDifferentFlame()
     {
@@ -96,7 +94,6 @@ class BowlingGameTest extends TestCase
      *
      * 残りガター
      *
-     * @return [type] [description]
      */
     public function testStrikeAtFirstFlame()
     {
@@ -110,12 +107,35 @@ class BowlingGameTest extends TestCase
         $this->assertEquals(23, $this->BowlingGame->calculateScore());
     }
 
+    /**
+     * 2球連続ストライクのケース
+     *
+     * 1投目: ストライク
+     * 2投目: ストライク
+     * 3投目: 3
+     * 4投目: 1
+     *
+     * 残りガター
+     *
+     */
+    public function testDoubleStrikeAtFirstFlame()
+    {
+        $this->BowlingGame->recordShot(10); //10+(10+3)
+        $this->BowlingGame->recordShot(10); //10+(3+1)
+        $this->BowlingGame->recordShot(3); //3
+        $this->BowlingGame->recordShot(1); //1           [計41]
+
+        $this->loopRecordShot(14, 0);
+
+        $this->assertEquals(38, $this->BowlingGame->calculateScore());
+    }
+
 
     /**
-　　  * @param  int    $loop [description]
-　　  * @param  int    $pin  [description]
-　　  * @return void       [description]
-　　  */
+     * @param  int    $loop [description]
+     * @param  int    $pin  [description]
+     * @return void       [description]
+     */
     private function loopRecordShot(int $loop, int $pin)
     {
         for ($i = 0; $i < $loop; $i++) {
