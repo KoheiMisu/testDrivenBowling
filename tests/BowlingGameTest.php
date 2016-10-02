@@ -127,7 +127,32 @@ class BowlingGameTest extends TestCase
 
         $this->loopRecordShot(14, 0);
 
-        $this->assertEquals(38, $this->BowlingGame->calculateScore());
+        $this->assertEquals(41, $this->BowlingGame->calculateScore());
+    }
+
+    /**
+     * 3球連続ストライクのケース
+     *
+     * 1投目: ストライク
+     * 2投目: ストライク
+     * 3投目: ストライク
+     * 4投目: 3
+     * 5投目: 1
+     *
+     * 残りガター
+     *
+     */
+    public function testTurkeyAtFirstFlame()
+    {
+        $this->BowlingGame->recordShot(10); //10+(10+10)
+        $this->BowlingGame->recordShot(10); //10+(10+3)
+        $this->BowlingGame->recordShot(10); //10+(3+1)
+        $this->BowlingGame->recordShot(3); //3
+        $this->BowlingGame->recordShot(1); //1           [計71]
+
+        $this->loopRecordShot(12, 0);
+
+        $this->assertEquals(71, $this->BowlingGame->calculateScore());
     }
 
 

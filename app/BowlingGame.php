@@ -19,6 +19,9 @@ class BowlingGame
     /** @var int **/
     private $strikeBonusCount;
 
+    /** @var int **/
+    private $doubleBonusCount;
+
     public function __construct()
     {
         $this->score = 0;
@@ -26,13 +29,14 @@ class BowlingGame
         $this->lastPin = 0;
         $this->shotNo = 0;
         $this->strikeBonusCount = 0;
+        $this->doubleBonusCount = 0;
     }
 
     /**
      * ボーリングの1投球の計算を実行させる
      *
-     * @param  int    $pin [description]
-     * @return [type]      [description]
+     * @param int    $pin [description]
+     * @return void
      */
     public function recordShot(int $pin)
     {
@@ -70,6 +74,11 @@ class BowlingGame
      */
     private function calculateStrike(int $pin)
     {
+        if ($this->doubleBonusCount > 0) {
+            $this->score += $pin;
+            --$this->doubleBonusCount;
+        }
+
         if ($this->strikeBonusCount > 0) {
             $this->score += $pin;
             --$this->strikeBonusCount;
@@ -84,7 +93,14 @@ class BowlingGame
     private function isStrike(int $pin)
     {
         if ($pin === 10) {
-            $this->strikeBonusCount = 2;
+
+            if ($this->strikeBonusCount !== 0) {
+                $this->doubleBonusCount = 2;
+            }
+
+            if ($this->strikeBonusCount === 0) {
+                $this->strikeBonusCount = 2;
+            }
         }
     }
 
