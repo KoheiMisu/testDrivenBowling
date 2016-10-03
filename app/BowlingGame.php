@@ -46,11 +46,17 @@ class BowlingGame
 
         $this->calculateSpare($pin);
 
-        $this->calculateStrike($pin);
+        $this->calculateStrikeBonus($pin);
+
+        $this->calculateDoubleBonus($pin);
 
         $this->setBonusParam($pin);
 
         $this->lastPin = $pin;
+
+        if ($this->shotNo > 2) {
+            $this->shotNo = 0;
+        }
     }
 
     /**
@@ -72,16 +78,24 @@ class BowlingGame
      * @param  int    $pin [description]
      * @return void      [description]
      */
-    private function calculateStrike(int $pin)
+    private function calculateStrikeBonus(int $pin)
+    {
+        if ($this->strikeBonusCount > 0) {
+            $this->score += $pin;
+            --$this->strikeBonusCount;
+        }
+    }
+
+    /**
+     * ダブル時の得点計算
+     * @param  int    $pin [description]
+     * @return void      [description]
+     */
+    private function calculateDoubleBonus(int $pin)
     {
         if ($this->doubleBonusCount > 0) {
             $this->score += $pin;
             --$this->doubleBonusCount;
-        }
-
-        if ($this->strikeBonusCount > 0) {
-            $this->score += $pin;
-            --$this->strikeBonusCount;
         }
     }
 
@@ -93,6 +107,8 @@ class BowlingGame
     private function isStrike(int $pin)
     {
         if ($pin === 10) {
+
+            $this->shotNo = 0;
 
             if ($this->strikeBonusCount !== 0) {
                 $this->doubleBonusCount = 2;
@@ -135,5 +151,13 @@ class BowlingGame
     public function calculateScore(): int
     {
         return $this->score;
+    }
+
+    /**
+     * @return int
+     */
+    public function flameScore(): int
+    {
+        return 0;
     }
 }

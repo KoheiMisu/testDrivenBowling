@@ -155,6 +155,64 @@ class BowlingGameTest extends TestCase
         $this->assertEquals(71, $this->BowlingGame->calculateScore());
     }
 
+    /**
+     * ストライクとスペアが複合した場合のケース
+     *
+     * 1投目: ストライク
+     * 2投目: 5
+     * 3投目: 5 (スペア)
+     * 4投目: 3
+     *
+     * 残りガター
+     *
+     */
+    public function testStrikeAndSpare()
+    {
+        $this->BowlingGame->recordShot(10); //10+(5+5)
+        $this->BowlingGame->recordShot(5); //5
+        $this->BowlingGame->recordShot(5); //5+(3)
+        $this->BowlingGame->recordShot(3); //3
+
+        $this->loopRecordShot(15, 0);
+
+        $this->assertEquals(36, $this->BowlingGame->calculateScore());
+    }
+
+    /**
+     * ストライクとスペアが複合した場合のケース
+     *
+     * 1投目: ストライク
+     * 2投目: ストライク
+     * 3投目: 5
+     * 4投目: 5 (スペア)
+     * 5投目: 3
+     *
+     * 残りガター
+     *
+     */
+    public function testDoubleStrikeAndSpare()
+    {
+        $this->BowlingGame->recordShot(10); //10+(10+5)
+        $this->BowlingGame->recordShot(10); //10+(5+5)
+        $this->BowlingGame->recordShot(5); //5
+        $this->BowlingGame->recordShot(5); //5+(3)
+        $this->BowlingGame->recordShot(3); //3
+
+        $this->loopRecordShot(13, 0);
+
+        $this->assertEquals(61, $this->BowlingGame->calculateScore());
+    }
+
+    /**
+     * 全球ガーター時の1フレーム目の得点
+     */
+    public function testCalculateFrameScoreAtAllGarter()
+    {
+        $this->loopRecordShot(20, 0);
+
+        $this->assertEquals(0, $this->BowlingGame->flameScore(1));
+    }
+
 
     /**
      * @param  int    $loop [description]
