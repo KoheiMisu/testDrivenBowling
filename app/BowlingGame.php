@@ -9,9 +9,6 @@ class BowlingGame
     /** @var int **/
     private $score;
 
-    /** @var int **/
-    private $lastPin;
-
     /** @var bool **/
     private $isSpare;
 
@@ -31,7 +28,6 @@ class BowlingGame
     {
         $this->score = 0;
         $this->isSpare = false;
-        $this->lastPin = 0;
         $this->shotNo = 0;
         $this->strikeBonusCount = 0;
         $this->doubleBonusCount = 0;
@@ -60,8 +56,6 @@ class BowlingGame
         $this->calculateDoubleBonus($pin);
 
         $this->setBonusParam($pin);
-
-        $this->lastPin = $pin;
 
         //フレームが完了したら新しいフレームを配列に追加
         if ($this->Flames[count($this->Flames)-1]->isFinished()) {
@@ -143,7 +137,7 @@ class BowlingGame
      */
     private function isSpare(int $pin)
     {
-        if ($this->shotNo === 2 && $pin + $this->lastPin === 10) {
+        if ($this->Flames[count($this->Flames)-1]->isSpare()) {
             $this->isSpare = true;
         }
     }
