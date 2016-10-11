@@ -10,6 +10,10 @@ class Flame
     /** @var  int */
     private $shotCount=0;
 
+    /** @var  int */
+    private $bonus=0;
+
+
     /**
      * @param int $pin
      */
@@ -20,11 +24,19 @@ class Flame
     }
 
     /**
+     * @param int $pin
+     */
+    public function addBonus(int $pin)
+    {
+        $this->bonus += $pin;
+    }
+
+    /**
      * @return int
      */
     public function getScore()
     {
-        return $this->score;
+        return $this->score + $this->bonus;
     }
 
     /**

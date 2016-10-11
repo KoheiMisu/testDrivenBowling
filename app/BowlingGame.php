@@ -13,9 +13,6 @@ class BowlingGame
     private $isSpare;
 
     /** @var int **/
-    private $shotNo;
-
-    /** @var int **/
     private $strikeBonusCount;
 
     /** @var int **/
@@ -24,11 +21,19 @@ class BowlingGame
     /** @var array */
     private $Flames;
 
+    /** @var  int スペアのフレームを記録 */
+    private $spareFlameNo;
+
+    /** @var  int ストライクのフレームを記録 */
+    private $strikeFlameNo;
+
+    /** @var  int ダブルストライクのフレームを記録 */
+    private $strikeDoubleFlameNo;
+
     public function __construct()
     {
         $this->score = 0;
         $this->isSpare = false;
-        $this->shotNo = 0;
         $this->strikeBonusCount = 0;
         $this->doubleBonusCount = 0;
         $this->Flames[] = new Flame(); // まずはフレーム一つだけでインスタンス作成
@@ -42,8 +47,6 @@ class BowlingGame
      */
     public function recordShot(int $pin)
     {
-        ++$this->shotNo;
-
         //配列の一番最後が現在のフレーム
         $this->Flames[count($this->Flames)-1]->recordShot($pin);
 
@@ -55,15 +58,11 @@ class BowlingGame
 
         $this->calculateDoubleBonus($pin);
 
-        $this->setBonusParam($pin);
+        $this->setBonusParam();
 
         //フレームが完了したら新しいフレームを配列に追加
         if ($this->Flames[count($this->Flames)-1]->isFinished()) {
             $this->Flames[] = new Flame();
-        }
-
-        if ($this->shotNo > 2) {
-            $this->shotNo = 0;
         }
     }
 
@@ -76,6 +75,10 @@ class BowlingGame
     private function calculateSpare(int $pin)
     {
         if ($this->isSpare) {
+            //スペアのボーナスをフレーム側に加算
+            $this->Flames[$this->spareFlameNo]->addBonus($pin);
+            $this->spareFlameNo = null;
+
             $this->score += $pin;
             $this->isSpare = false;
         }
@@ -89,6 +92,7 @@ class BowlingGame
     private function calculateStrikeBonus(int $pin)
     {
         if ($this->strikeBonusCount > 0) {
+            $this->Flames[$this->strikeFlameNo]->addBonus($pin);
             $this->score += $pin;
             --$this->strikeBonusCount;
         }
@@ -102,23 +106,32 @@ class BowlingGame
     private function calculateDoubleBonus(int $pin)
     {
         if ($this->doubleBonusCount > 0) {
+
+            //ダブルの一投目は二つ前のフレームに送る
+            if ($this->doubleBonusCount === 2) {
+                $this->Flames[$this->strikeDoubleFlameNo-1]->addBonus($pin);
+            } else {
+                $this->Flames[$this->strikeDoubleFlameNo]->addBonus($pin);
+            }
+
             $this->score += $pin;
             --$this->doubleBonusCount;
+
         }
     }
 
     /**
      * ストライク時にボーナス管理の変数をセット
-     * @param  int     $pin [description]
      * @return void      [description]
      */
-    private function isStrike(int $pin)
+    private function isStrike()
     {
-        if ($pin === 10) {
+        if ($this->Flames[count($this->Flames)-1]->isStrike()) {
 
-            $this->shotNo = 0;
+            $this->strikeFlameNo = count($this->Flames)-1;
 
             if ($this->strikeBonusCount !== 0) {
+                $this->strikeDoubleFlameNo = count($this->Flames)-1;
                 $this->doubleBonusCount = 2;
             }
 
@@ -132,25 +145,26 @@ class BowlingGame
      * 2投目のときにスペアかどうか判定
      * 10点とったらフラグを立てる
      *
-     * @param  int     $pin [description]
      * @return void      [description]
      */
-    private function isSpare(int $pin)
+    private function isSpare()
     {
         if ($this->Flames[count($this->Flames)-1]->isSpare()) {
             $this->isSpare = true;
+
+            //スペアをとったフレーム番号を記憶
+            $this->spareFlameNo = count($this->Flames)-1;
         }
     }
 
     /**
      * 今回の投球がボーナス回として次の投球に影響するか判定
-     * @param int $pin [description]
      * @return void
      */
-    private function setBonusParam(int $pin)
+    private function setBonusParam()
     {
-        $this->isSpare($pin);
-        $this->isStrike($pin);
+        $this->isSpare();
+        $this->isStrike();
     }
 
     /**

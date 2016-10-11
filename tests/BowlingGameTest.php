@@ -58,6 +58,12 @@ class BowlingGameTest extends TestCase
         $this->loopRecordShot(17, 0);
 
         $this->assertEquals(18, $this->BowlingGame->calculateScore());
+
+        /*
+         * スペアのテスト時にフレームの点数がボーナス込みで
+         * 14点であることを確認
+         */
+        $this->assertEquals(14, $this->BowlingGame->flameScore(0));
     }
 
     /**
@@ -105,6 +111,9 @@ class BowlingGameTest extends TestCase
         $this->loopRecordShot(15, 0);
 
         $this->assertEquals(23, $this->BowlingGame->calculateScore());
+
+        //ストライク時に1フレーム目の点数が16点になっているか
+        $this->assertEquals(16, $this->BowlingGame->flameScore(0));
     }
 
     /**
@@ -128,6 +137,10 @@ class BowlingGameTest extends TestCase
         $this->loopRecordShot(14, 0);
 
         $this->assertEquals(41, $this->BowlingGame->calculateScore());
+
+        //ストライク時に1フレーム目と2フレーム目の点数がただし以下
+        $this->assertEquals(23, $this->BowlingGame->flameScore(0));
+        $this->assertEquals(14, $this->BowlingGame->flameScore(1));
     }
 
     /**

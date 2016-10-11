@@ -79,4 +79,23 @@ class FlameTest extends TestCase
         $this->Flame->recordShot(10);
         $this->assertTrue($this->Flame->isStrike()); //1投目で10ピン倒したのでストライク
     }
+
+    /**
+     * @test
+     */
+    public function _スペア時のボーナス点加算()
+    {
+        $this->Flame->recordShot(5);
+        $this->Flame->recordShot(5);
+        $this->Flame->addBonus(5);
+        $this->assertEquals(15, $this->Flame->getScore());
+    }
+
+    /**
+     * @test
+     */
+    public function _オープンフレームにボーナスは不要()
+    {
+
+    }
 }
