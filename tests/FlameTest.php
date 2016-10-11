@@ -73,10 +73,10 @@ class FlameTest extends TestCase
     /**
      * @test
      */
-//    public function _1投目で10ピン倒した場合はストライク()
-//    {
-//        $this->Flame->isStrike(); //投球前はストライクではない
-//        $this->Flame->recordShot(10);
-//        $this->assertTrue($this->Flame->isStrike()); //1投目で10ピン倒したのでストライク
-//    }
+    public function _1投目で10ピン倒した場合はストライク()
+    {
+        $this->Flame->isStrike(); //投球前はストライクではない
+        $this->Flame->recordShot(10);
+        $this->assertTrue($this->Flame->isStrike()); //1投目で10ピン倒したのでストライク
+    }
 }

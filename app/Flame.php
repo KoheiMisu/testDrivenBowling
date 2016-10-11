@@ -44,7 +44,19 @@ class Flame
      */
     public function isSpare(): bool
     {
-        if ($this->score === 10 || $this->shotCount > 1) {
+        if ($this->score === 10 && $this->shotCount > 1) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isStrike(): bool
+    {
+        if ($this->score === 10 && $this->shotCount === 1) {
             return true;
         }
 
