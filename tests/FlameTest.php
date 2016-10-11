@@ -58,4 +58,25 @@ class FlameTest extends TestCase
         $this->Flame->recordShot(10);
         $this->assertTrue($this->Flame->isFinished()); //2投したので完了
     }
+
+    /**
+     * @test
+     */
+    public function _2投目で10ピン倒した場合はスペア()
+    {
+        $this->Flame->recordShot(5);
+        $this->assertFalse($this->Flame->isSpare()); //1投目5ピンなのでスペアでない
+        $this->Flame->recordShot(5);
+        $this->assertTrue($this->Flame->isSpare()); //2投目合計10ピンなのでスペア
+    }
+
+    /**
+     * @test
+     */
+//    public function _1投目で10ピン倒した場合はストライク()
+//    {
+//        $this->Flame->isStrike(); //投球前はストライクではない
+//        $this->Flame->recordShot(10);
+//        $this->assertTrue($this->Flame->isStrike()); //1投目で10ピン倒したのでストライク
+//    }
 }

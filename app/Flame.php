@@ -28,11 +28,23 @@ class Flame
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isFinished()
+    public function isFinished(): bool
     {
         if ($this->score >= 10 || $this->shotCount > 1) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSpare(): bool
+    {
+        if ($this->score === 10 || $this->shotCount > 1) {
             return true;
         }
 
