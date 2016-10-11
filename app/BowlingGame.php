@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App¥Flame;
+
 class BowlingGame
 {
     /** @var int **/
@@ -22,6 +24,9 @@ class BowlingGame
     /** @var int **/
     private $doubleBonusCount;
 
+    /** @var array */
+    private $Flames;
+
     public function __construct()
     {
         $this->score = 0;
@@ -30,6 +35,7 @@ class BowlingGame
         $this->shotNo = 0;
         $this->strikeBonusCount = 0;
         $this->doubleBonusCount = 0;
+        $this->Flames[] = new Flame(); // まずはフレーム一つだけでインスタンス作成
     }
 
     /**
@@ -42,6 +48,9 @@ class BowlingGame
     {
         ++$this->shotNo;
 
+        //配列の一番最後が現在のフレーム
+        $this->Flames[count($this->Flames)-1]->recordShot($pin);
+
         $this->score += $pin;
 
         $this->calculateSpare($pin);
@@ -53,6 +62,11 @@ class BowlingGame
         $this->setBonusParam($pin);
 
         $this->lastPin = $pin;
+
+        //フレームが完了したら新しいフレームを配列に追加
+        if ($this->Flames[count($this->Flames)-1]->isFinished()) {
+            $this->Flames[] = new Flame();
+        }
 
         if ($this->shotNo > 2) {
             $this->shotNo = 0;
@@ -154,10 +168,12 @@ class BowlingGame
     }
 
     /**
+     * @param int
      * @return int
      */
-    public function flameScore(): int
+    public function flameScore(int $flameNo): int
     {
-        return 0;
+        return $this->Flames[$flameNo]->getScore($flameNo);
     }
+
 }

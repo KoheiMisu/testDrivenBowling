@@ -213,6 +213,18 @@ class BowlingGameTest extends TestCase
         $this->assertEquals(0, $this->BowlingGame->flameScore(1));
     }
 
+    /**
+     * @test
+     */
+    public function _全ての投球が1ピンだと全フレーム2点()
+    {
+        $this->loopRecordShot(20, 1);
+
+        for ($i = 0; $i <= 9; $i++) {
+            $this->assertEquals(2, $this->BowlingGame->flameScore($i));
+        }
+    }
+
 
     /**
      * @param  int    $loop [description]
