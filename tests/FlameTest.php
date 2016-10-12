@@ -96,6 +96,32 @@ class FlameTest extends TestCase
      */
     public function _オープンフレームにボーナスは不要()
     {
+        $this->Flame->recordShot(3);
+        $this->Flame->recordShot(3);
+        $this->assertFalse($this->Flame->needBonus());
+    }
 
+    /**
+     * @test
+     */
+    public function _スペアのボーナスは1投分で完了()
+    {
+        $this->Flame->recordShot(5);
+        $this->Flame->recordShot(5);
+        $this->assertTrue($this->Flame->needBonus()); //ボーナス付与前
+        $this->Flame->addBonus(5);
+        $this->assertFalse($this->Flame->needBonus());
+    }
+
+    /**
+     * @test
+     */
+    public function _ストライクのボーナスは2投分で完了()
+    {
+        $this->Flame->recordShot(10);
+        $this->Flame->addBonus(5);
+        $this->assertTrue($this->Flame->needBonus()); //ボーナス付与後①
+        $this->Flame->addBonus(5);
+        $this->assertFalse($this->Flame->needBonus()); //ボーナス付与後②
     }
 }

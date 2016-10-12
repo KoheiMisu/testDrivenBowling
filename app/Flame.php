@@ -13,6 +13,9 @@ class Flame
     /** @var  int */
     private $bonus=0;
 
+    /** @var  int */
+    private $bonusCount=0;
+
 
     /**
      * @param int $pin
@@ -29,6 +32,7 @@ class Flame
     public function addBonus(int $pin)
     {
         $this->bonus += $pin;
+        $this->bonusCount += 1;
     }
 
     /**
@@ -70,6 +74,22 @@ class Flame
     {
         if ($this->score === 10 && $this->shotCount === 1) {
             return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function needBonus(): bool
+    {
+        if ($this->isSpare()) {
+            return $this->bonusCount < 1;
+        }
+
+        if ($this->isStrike()) {
+            return $this->bonusCount < 2;
         }
 
         return false;

@@ -7,12 +7,6 @@ use App¥Flame;
 class BowlingGame
 {
     /** @var int **/
-    private $score;
-
-    /** @var bool **/
-    private $isSpare;
-
-    /** @var int **/
     private $strikeBonusCount;
 
     /** @var int **/
@@ -33,7 +27,6 @@ class BowlingGame
     public function __construct()
     {
         $this->score = 0;
-        $this->isSpare = false;
         $this->strikeBonusCount = 0;
         $this->doubleBonusCount = 0;
         $this->Flames[] = new Flame(); // まずはフレーム一つだけでインスタンス作成
@@ -49,8 +42,6 @@ class BowlingGame
     {
         //配列の一番最後が現在のフレーム
         $this->Flames[count($this->Flames)-1]->recordShot($pin);
-
-        $this->score += $pin;
 
         $this->calculateSpare($pin);
 
@@ -74,13 +65,10 @@ class BowlingGame
      */
     private function calculateSpare(int $pin)
     {
-        if ($this->isSpare) {
+        if (isset($this->spareFlameNo) && $this->Flames[$this->spareFlameNo]->needBonus()) {
             //スペアのボーナスをフレーム側に加算
             $this->Flames[$this->spareFlameNo]->addBonus($pin);
             $this->spareFlameNo = null;
-
-            $this->score += $pin;
-            $this->isSpare = false;
         }
     }
 
@@ -93,7 +81,6 @@ class BowlingGame
     {
         if ($this->strikeBonusCount > 0) {
             $this->Flames[$this->strikeFlameNo]->addBonus($pin);
-            $this->score += $pin;
             --$this->strikeBonusCount;
         }
     }
@@ -114,7 +101,6 @@ class BowlingGame
                 $this->Flames[$this->strikeDoubleFlameNo]->addBonus($pin);
             }
 
-            $this->score += $pin;
             --$this->doubleBonusCount;
 
         }
@@ -150,8 +136,6 @@ class BowlingGame
     private function isSpare()
     {
         if ($this->Flames[count($this->Flames)-1]->isSpare()) {
-            $this->isSpare = true;
-
             //スペアをとったフレーム番号を記憶
             $this->spareFlameNo = count($this->Flames)-1;
         }
@@ -172,7 +156,12 @@ class BowlingGame
      */
     public function calculateScore(): int
     {
-        return $this->score;
+        $total = 0;
+        foreach ($this->Flames as $Flame) {
+            $total += $Flame->getScore();
+        }
+
+        return $total;
     }
 
     /**
